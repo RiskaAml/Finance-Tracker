@@ -1,12 +1,21 @@
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts"
 
 export default function ExpenseChart({ transactions }) {
-  const expenseData = transactions
+  const expenseData = Object.values(
+  transactions
     .filter((t) => t.type === "expense")
-    .map((t) => ({
-      name: t.title,
-      value: t.amount,
-    }))
+    .reduce((acc, t) => {
+      if (!acc[t.category]) {
+        acc[t.category] = { name: t.category, value: 0 }
+      }
+      acc[t.category].value += t.amount
+      return acc
+    }, {})
+    
+)
+const COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#f59e0b"]
+
+
 
   if (expenseData.length === 0) return null
 
@@ -22,8 +31,9 @@ export default function ExpenseChart({ transactions }) {
           outerRadius={100}
         >
           {expenseData.map((_, index) => (
-            <Cell key={index} />
-          ))}
+  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+))}
+
         </Pie>
         <Tooltip />
         <Legend />

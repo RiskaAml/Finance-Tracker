@@ -4,6 +4,8 @@ export default function TransactionForm({ onAdd }) {
   const [title, setTitle] = useState("")
   const [amount, setAmount] = useState("")
   const [type, setType] = useState("income")
+  const [category, setCategory] = useState("general")
+
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -15,10 +17,13 @@ export default function TransactionForm({ onAdd }) {
       title,
       amount: Number(amount),
       type,
+      category, 
     })
 
     setTitle("")
     setAmount("")
+    setCategory("general")
+
   }
 
   return (
@@ -49,6 +54,18 @@ export default function TransactionForm({ onAdd }) {
         <option value="income">Income</option>
         <option value="expense">Expense</option>
       </select>
+
+      <select
+  className="w-full border p-2 rounded mb-3"
+  value={category}
+  onChange={(e) => setCategory(e.target.value)}
+>
+  <option value="general">General</option>
+  <option value="food">Food</option>
+  <option value="transport">Transport</option>
+  <option value="shopping">Shopping</option>
+</select>
+
 
       <button className="w-full bg-black text-white py-2 rounded">
         Add

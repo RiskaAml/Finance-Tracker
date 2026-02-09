@@ -5,6 +5,7 @@ export default function TransactionList({ transactions, onDelete }) {
       <p className="text-gray-500 mt-6">
         Belum ada transaksi.
       </p>
+      
     )
   }
 
@@ -17,6 +18,9 @@ export default function TransactionList({ transactions, onDelete }) {
         >
           <div>
             <p className="font-medium">{t.title}</p>
+            <p className="text-xs text-gray-400 capitalize">
+  {t.category}
+</p>
             <p
               className={
                 t.type === "income"
