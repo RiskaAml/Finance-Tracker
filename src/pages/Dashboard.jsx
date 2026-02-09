@@ -7,11 +7,15 @@ import ExpenseChart from "../components/ExpenseChart"
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([])
+  const [editingId, setEditingId] = useState(null)
+
 
   // Simpan ke localStorage
   useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(transactions))
-  }, [transactions])
+  const saved = localStorage.getItem("transactions")
+  if (saved) setTransactions(JSON.parse(saved))
+}, [])
+
 
   function addTransaction(transaction) {
     setTransactions((prev) => [transaction, ...prev])
@@ -23,6 +27,17 @@ export default function Dashboard() {
       prev.filter((t) => t.id !== id)
     )
   }
+
+  function updateTransaction(updated) {
+  setTransactions((prev) =>
+    prev.map((t) => (t.id === updated.id ? updated : t))
+  )
+  setEditingId(null)
+}
+
+const editingTransaction =
+  transactions.find((t) => t.id === editingId) || null
+
 
   const income = transactions
     .filter((t) => t.type === "income")
@@ -66,11 +81,18 @@ export default function Dashboard() {
       </div>
 
       {/* Form dan list*/}
-      <TransactionForm onAdd={addTransaction} />
+      <TransactionForm
+  onAdd={addTransaction}
+  onUpdate={updateTransaction}
+  editing={editingTransaction}
+/>
+
       <TransactionList
-        transactions={transactions}
-        onDelete={deleteTransaction}
-      />
+  transactions={transactions}
+  onDelete={deleteTransaction}
+  onEdit={setEditingId}
+/>
+
       <ExpenseChart transactions={transactions} />
 
     </div>

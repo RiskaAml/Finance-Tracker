@@ -1,5 +1,5 @@
 import { formatRupiah } from "../utils/format"
-export default function TransactionList({ transactions, onDelete }) {
+export default function TransactionList({ transactions, onDelete, onEdit }) {
   if (transactions.length === 0) {
     return (
       <p className="text-gray-500 mt-6">
@@ -38,6 +38,13 @@ export default function TransactionList({ transactions, onDelete }) {
           >
             Hapus
           </button>
+          <button
+  onClick={() => onEdit(t.id)}
+  className="text-sm text-blue-500 hover:underline mr-3"
+>
+  Edit
+</button>
+
         </li>
       ))}
     </ul>

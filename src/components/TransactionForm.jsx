@@ -1,30 +1,45 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-export default function TransactionForm({ onAdd }) {
+export default function TransactionForm({ onAdd, onUpdate, editing }) {
   const [title, setTitle] = useState("")
   const [amount, setAmount] = useState("")
   const [type, setType] = useState("income")
   const [category, setCategory] = useState("general")
+  useEffect(() => {
+  if (editing) {
+    setTitle(editing.title)
+    setAmount(editing.amount)
+    setType(editing.type)
+    setCategory(editing.category || "general")
+  }
+}, [editing])
 
 
   function handleSubmit(e) {
-    e.preventDefault()
+  e.preventDefault()
 
-    if (!title || !amount) return
+  if (!title.trim()) return
+  if (!amount || Number(amount) <= 0) return
 
-    onAdd({
-      id: Date.now(),
-      title,
-      amount: Number(amount),
-      type,
-      category, 
-    })
-
-    setTitle("")
-    setAmount("")
-    setCategory("general")
-
+  const payload = {
+    id: editing ? editing.id : Date.now(),
+    title,
+    amount: Number(amount),
+    type,
+    category,
   }
+
+  if (editing) {
+    onUpdate(payload)
+  } else {
+    onAdd(payload)
+  }
+
+  setTitle("")
+  setAmount("")
+  setCategory("general")
+}
+
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-4 rounded-xl shadow mt-6">
@@ -68,8 +83,9 @@ export default function TransactionForm({ onAdd }) {
 
 
       <button className="w-full bg-black text-white py-2 rounded">
-        Add
-      </button>
+  {editing ? "Update" : "Add"}
+</button>
+
     </form>
   )
 }
