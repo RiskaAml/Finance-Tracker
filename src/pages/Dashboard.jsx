@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import TransactionForm from "../components/TransactionForm"
 import TransactionList from "../components/TransactionList"
 import { formatRupiah } from "../utils/format"
+import ExpenseChart from "../components/ExpenseChart"
+
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([])
@@ -69,6 +71,8 @@ export default function Dashboard() {
         transactions={transactions}
         onDelete={deleteTransaction}
       />
+      <ExpenseChart transactions={transactions} />
+
     </div>
   )
 }
