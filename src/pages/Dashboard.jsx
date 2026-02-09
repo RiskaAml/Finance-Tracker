@@ -1,11 +1,25 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import TransactionForm from "../components/TransactionForm"
+import TransactionList from "../components/TransactionList"
+import { formatRupiah } from "../utils/format"
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([])
 
+  // Simpan ke localStorage
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(transactions))
+  }, [transactions])
+
   function addTransaction(transaction) {
     setTransactions((prev) => [transaction, ...prev])
+  }
+
+  // Menghapus transaksi
+  function deleteTransaction(id) {
+    setTransactions((prev) =>
+      prev.filter((t) => t.id !== id)
+    )
   }
 
   const income = transactions
@@ -30,27 +44,31 @@ export default function Dashboard() {
         <div className="bg-white p-4 rounded-xl shadow">
           <p className="text-sm text-gray-500">Income</p>
           <p className="text-xl font-semibold text-green-600">
-            Rp {income}
+            {formatRupiah(income)}
           </p>
         </div>
 
         <div className="bg-white p-4 rounded-xl shadow">
           <p className="text-sm text-gray-500">Expense</p>
           <p className="text-xl font-semibold text-red-600">
-            Rp {expense}
+            {formatRupiah(expense)}
           </p>
         </div>
 
         <div className="bg-white p-4 rounded-xl shadow">
           <p className="text-sm text-gray-500">Balance</p>
           <p className="text-xl font-semibold">
-            Rp {balance}
+            {formatRupiah(balance)}
           </p>
         </div>
       </div>
 
-      {/* Form */}
+      {/* Form dan list*/}
       <TransactionForm onAdd={addTransaction} />
+      <TransactionList
+        transactions={transactions}
+        onDelete={deleteTransaction}
+      />
     </div>
   )
 }
