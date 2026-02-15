@@ -3,32 +3,43 @@ import TransactionForm from "../components/TransactionForm"
 import TransactionList from "../components/TransactionList"
 import { formatRupiah } from "../utils/format"
 import ExpenseChart from "../components/ExpenseChart"
-
+import {
+  getTransactions,
+  createTransaction,
+  deleteTransactionApi,
+  updateTransactionApi,
+} from "../utils/api"
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([])
   const [editingId, setEditingId] = useState(null)
 
 
-  // Simpan ke localStorage
+  //Ganti useEffect load data (pakai api)
   useEffect(() => {
-  const saved = localStorage.getItem("transactions")
-  if (saved) setTransactions(JSON.parse(saved))
-}, [])
+    async function load() {
+      const data = await getTransactions()
+      setTransactions(data)
+    }
+    load()
+  }, [])
 
 
-  function addTransaction(transaction) {
-    setTransactions((prev) => [transaction, ...prev])
+  async function addTransaction(transaction) {
+    const created = await createTransaction(transaction)
+    setTransactions((prev) => [created, ...prev])
   }
 
   // Menghapus transaksi
-  function deleteTransaction(id) {
-    setTransactions((prev) =>
-      prev.filter((t) => t.id !== id)
+  async function deleteTransaction(id) {
+    await deleteTransactionApi(id)
+    setTransactions((prev) => 
+      prev.filter((t) => t.id != id)
     )
   }
 
-  function updateTransaction(updated) {
+  async function updateTransaction(updated) {
+  await updateTransactionApi(updated.id, updated)
   setTransactions((prev) =>
     prev.map((t) => (t.id === updated.id ? updated : t))
   )
